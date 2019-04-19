@@ -1,0 +1,17 @@
+.\objects\queue_1.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS-FreeRTOS\10.0.1\Source\queue.c
+.\objects\queue_1.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\queue_1.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\queue_1.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS-FreeRTOS\10.0.1\Source\include\FreeRTOS.h
+.\objects\queue_1.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\queue_1.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\queue_1.o: .\RTE\RTOS\FreeRTOSConfig.h
+.\objects\queue_1.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS-FreeRTOS\10.0.1\CMSIS\RTOS2\FreeRTOS\Include\freertos_evr.h
+.\objects\queue_1.o: .\RTE\_STM32F103C8\RTE_Components.h
+.\objects\queue_1.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS-FreeRTOS\10.0.1\Source\include\projdefs.h
+.\objects\queue_1.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS-FreeRTOS\10.0.1\Source\include\portable.h
+.\objects\queue_1.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS-FreeRTOS\10.0.1\Source\include\deprecated_definitions.h
+.\objects\queue_1.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS-FreeRTOS\10.0.1\Source\portable\RVDS\ARM_CM3\portmacro.h
+.\objects\queue_1.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS-FreeRTOS\10.0.1\Source\include\mpu_wrappers.h
+.\objects\queue_1.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS-FreeRTOS\10.0.1\Source\include\task.h
+.\objects\queue_1.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS-FreeRTOS\10.0.1\Source\include\list.h
+.\objects\queue_1.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS-FreeRTOS\10.0.1\Source\include\queue.h
