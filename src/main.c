@@ -5,10 +5,13 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#define EXT12 12
+#define ONOFF 1
 
 void ledInit(void);
 void usartInit(void);
-void buttonInit(void);
+void reedInit(void);
+void interruptInit(void);
 // RTOS task
 void vTaskLedRed(void *p);
 void vTaskLedYellow(void *p);
@@ -17,9 +20,11 @@ void vTaskLedGreen(void *p);
 int main(void)
 {
     // Configure GPIO for LED
-		buttonInit();
+	reedInit();
     ledInit();
-		usartInit();
+	usartInit();
+	interruptInit();
+	
     // Create LED blink task
     xTaskCreate(vTaskLedRed, (const char*) "Red LED Blink", 
         128, NULL, 1, NULL);
@@ -29,26 +34,50 @@ int main(void)
     //Start RTOS scheduler
     vTaskStartScheduler();
 
-		while (1) {
-			
-        if (!(GPIO_ReadInputData(GPIOB) & GPIO_Pin_12))
+	while (1) {};
+				
+    return 0;
+}
+
+void interruptInit() {
+	__disable_irq();
+	
+	RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;					// ENABLE clock for AFIO
+	AFIO->EXTICR[3] |= (0b0001 << 0); 					// PB12
+	EXTI->IMR |= (1 << EXT12);							// Unmask for EXT12
+	EXTI->FTSR |= (1 << EXT12);							// Falling trigger
+	EXTI->RTSR |= (1 << EXT12);							// Rising trigger
+	
+	NVIC_EnableIRQ(EXTI15_10_IRQn);
+	
+	__enable_irq();
+}
+
+void EXTI15_10_IRQHandler(void) {
+		// POSTA I KÖ!!! GÖR JOBBET UTANFÖR!!!
+	    if (!(GPIO_ReadInputData(GPIOB) & GPIO_Pin_12))
         {
-            // Turn on LED on PA0 (LED circuit is active low)
+            USART1->DR = (uint16_t) 0 + '0';
+			while (!(USART1->SR & USART_SR_TXE)){}; // empty
+			USART1->DR = (uint16_t) '\r';
+			while (!(USART1->SR & USART_SR_TXE)){}; // empty
             GPIO_ResetBits(GPIOB, GPIO_Pin_13);
         }
         else
         {
-            // Turn off LED on PA0
+            USART1->DR = (uint16_t) 1 + '0';
+			while (!(USART1->SR & USART_SR_TXE)){}; // empty
+			USART1->DR = (uint16_t) '\r';
+			while (!(USART1->SR & USART_SR_TXE)){}; // empty
             GPIO_SetBits(GPIOB, GPIO_Pin_13);
-        }
-		}
+        }	
 		
-    return 0;
+		EXTI->PR = (1 << EXT12);
 }
 
-void buttonInit()
+void reedInit()
 {
-		GPIO_InitTypeDef GPIO_InitStruct;
+	GPIO_InitTypeDef GPIO_InitStruct;
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
     GPIO_InitStruct.GPIO_Pin = GPIO_Pin_12;
@@ -126,14 +155,6 @@ void vTaskLedYellow(void *p)
 {
     for (;;)
     {
-				USART1->DR = (uint16_t)'A';
-				while (!(USART1->SR & USART_SR_TXE)){}; // empty
-				USART1->DR = (uint16_t)'T';
-				while (!(USART1->SR & USART_SR_TXE)){}; // empty
-				USART1->DR = (uint16_t)'\r';
-				while (!(USART1->SR & USART_SR_TXE)){}; // empty
-				USART1->DR = (uint16_t)'\n';
-				while (!(USART1->SR & USART_SR_TXE)){}; // empty	
         GPIOC->ODR ^= GPIO_Pin_15;
         vTaskDelay(1000/portTICK_RATE_MS);
     }
