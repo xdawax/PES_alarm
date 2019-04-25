@@ -20,13 +20,13 @@ int main(void)
 		buttonInit();
     ledInit();
 		usartInit();
-  /*  // Create LED blink task
+    // Create LED blink task
     xTaskCreate(vTaskLedRed, (const char*) "Red LED Blink", 
         128, NULL, 1, NULL);
     xTaskCreate(vTaskLedYellow, (const char*) "Yellow LED Blink",
         128, NULL, 1, NULL);
     xTaskCreate(vTaskLedGreen, (const char*) "Green LED Blink", 128, NULL, 1, NULL);
-    //Start RTOS scheduler*/
+    //Start RTOS scheduler
     vTaskStartScheduler();
 
 		while (1) {
@@ -77,20 +77,40 @@ void ledInit()
 
 void usartInit()
 {
-		RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;              // enable clock for GPIOA
-		RCC->APB2ENR |= RCC_APB2ENR_USART1EN;            // enable clock for USART1
-		// PINS
-		GPIOA->CRH |= (0x0BUL << 4);                  // Tx (PA9) alt. out push-pull
-		GPIOA->CRH |= (0x04UL << 8);    
-	
-	
-		// USART SETTINGS
-		USART1->CR1 |= USART_CR1_UE;							// enable
-		USART1->CR1 |= USART_CR1_M;								// word length 8 bit
-		USART1->CR2 &= ~((1 << 13) | (1 << 12));	// bit 12-13 == 0,0 => 1 stop bit
-		//USART1->CR3 |= USART_CR3_DMAT;					// DMA enable	
-		USART1->BRR = 0x1d4c;											// mantissa 468, fraction 0,75 => 111010100, 1100 (72MHz)
-		USART1->CR1 |= USART_CR1_TE | USART_CR1_RE;							// tx enable
+		GPIO_InitTypeDef GPIO_InitStructure;
+    USART_InitTypeDef USART_InitStructure;
+
+    /* Enable peripheral clocks for USART1 on GPIOA */
+    RCC_APB2PeriphClockCmd(
+        RCC_APB2Periph_USART1 |
+        RCC_APB2Periph_GPIOA |
+        RCC_APB2Periph_AFIO, ENABLE);
+        
+    /* Configure PA9 and PA10 as USART1 TX/RX */
+    
+    /* PA9 = alternate function push/pull output */
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+    
+    /* PA10 = floating input */
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+    
+    /* Configure and initialize usart... */
+    USART_InitStructure.USART_BaudRate = 9600;
+    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+    USART_InitStructure.USART_StopBits = USART_StopBits_1;
+    USART_InitStructure.USART_Parity = USART_Parity_No;
+    USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+    USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+        
+    USART_Init(USART1, &USART_InitStructure);
+    
+    /* Enable USART1 */
+    USART_Cmd(USART1, ENABLE); 
 }
 
 void vTaskLedRed(void *p)
