@@ -67,3 +67,4 @@ DebugConfig/STM32F103C8_STM32F103C8_1.0.0.dbgconf
 PES_alarm.uvguix.dawa
 PES_alarm.uvoptx
 *.uvprojx
+*.dawa
