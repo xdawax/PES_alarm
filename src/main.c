@@ -7,11 +7,23 @@
 
 #define EXT12 12
 #define ONOFF 1
+#define TYPE_ALARM 1
+#define DATA_SWITCH_OPEN 0
+#define DATA_SWITCH_CLOSED 1
+
+
+typedef struct txData {
+	uint8_t sensorType;		// defines what type of sensor has read the data (1 == ALARM, 2 == ?, 3 == ? etc...)
+	uint8_t data;			// the data represented by an integer (if reed => 0 == switch open, 1 == switch closed)
+} txData_t;
+
+volatile txData_t txData;
 
 void ledInit(void);
 void usartInit(void);
 void reedInit(void);
 void interruptInit(void);
+void dataInit(uint8_t type, uint8_t data);
 // RTOS task
 void vTaskLedRed(void *p);
 void vTaskLedYellow(void *p);
@@ -19,7 +31,7 @@ void vTaskLedGreen(void *p);
 
 int main(void)
 {
-    // Configure GPIO for LED
+    dataInit(TYPE_ALARM, DATA_SWITCH_OPEN); 
 	reedInit();
     ledInit();
 	usartInit();
@@ -39,6 +51,11 @@ int main(void)
     return 0;
 }
 
+void dataInit(uint8_t type, uint8_t data) {
+	txData.sensorType = type;
+	txData.data = data;
+}
+
 void interruptInit() {
 	__disable_irq();
 	
@@ -51,6 +68,10 @@ void interruptInit() {
 	NVIC_EnableIRQ(EXTI15_10_IRQn);
 	
 	__enable_irq();
+}
+
+void tx_dataStruct(txData_t data) {
+	
 }
 
 void EXTI15_10_IRQHandler(void) {
