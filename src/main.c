@@ -7,15 +7,10 @@
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "task.h"
-#include "../header/usart.h"
 
-#define EXT12 12
-#define ONOFF 1
-#define TYPE_ALARM 1
-#define DATA_SWITCH_OPEN 0
-#define DATA_SWITCH_CLOSED 1
-#define QUEUE_LENGTH 100
-#define QUEUE_ITEM_SIZE sizeof(txData)
+#include "../header/usart.h"
+#include "../header/defines.h"
+
 
 
 typedef struct txData {
@@ -54,8 +49,6 @@ int main(void)
 	//Start RTOS scheduler
     vTaskStartScheduler();
 
-	while (1) {};
-				
     return 0;
 }
 
