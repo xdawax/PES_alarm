@@ -1,15 +1,21 @@
+#include <stdbool.h>
+
 #include "stm32f10x.h"
 #include "stm32f10x_rcc.h"
 #include "stm32f10x_gpio.h"
 
 #include "FreeRTOS.h"
+#include "queue.h"
 #include "task.h"
+#include "../header/usart.h"
 
 #define EXT12 12
 #define ONOFF 1
 #define TYPE_ALARM 1
 #define DATA_SWITCH_OPEN 0
 #define DATA_SWITCH_CLOSED 1
+#define QUEUE_LENGTH 100
+#define QUEUE_ITEM_SIZE sizeof(txData)
 
 
 typedef struct txData {
@@ -19,8 +25,8 @@ typedef struct txData {
 
 volatile txData_t txData;
 
+
 void ledInit(void);
-void usartInit(void);
 void reedInit(void);
 void interruptInit(void);
 void dataInit(uint8_t type, uint8_t data);
@@ -29,12 +35,13 @@ void vTaskLedRed(void *p);
 void vTaskLedYellow(void *p);
 void vTaskLedGreen(void *p);
 
+
 int main(void)
 {
     dataInit(TYPE_ALARM, DATA_SWITCH_OPEN); 
 	reedInit();
     ledInit();
-	usartInit();
+	usartInit(9600);
 	interruptInit();
 	
     // Create LED blink task
@@ -43,13 +50,15 @@ int main(void)
     xTaskCreate(vTaskLedYellow, (const char*) "Yellow LED Blink",
         128, NULL, 1, NULL);
     xTaskCreate(vTaskLedGreen, (const char*) "Green LED Blink", 128, NULL, 1, NULL);
-    //Start RTOS scheduler
+	
+	//Start RTOS scheduler
     vTaskStartScheduler();
 
 	while (1) {};
 				
     return 0;
 }
+
 
 void dataInit(uint8_t type, uint8_t data) {
 	txData.sensorType = type;
@@ -71,32 +80,28 @@ void interruptInit() {
 }
 
 void tx_dataStruct(txData_t data) {
-	USART1->DR = data.sensorType;
+	USART1->DR = data.sensorType + '0';
 	while (!(USART1->SR & USART_SR_TXE)){}; // empty
-	USART1->DR = data.data;
+	USART1->DR = data.data + '0';
 	while (!(USART1->SR & USART_SR_TXE)){}; // empty
 	USART1->DR = '\n';
+	while (!(USART1->SR & USART_SR_TXE)){}; // empty
 }
 
 void EXTI15_10_IRQHandler(void) {
 		// POSTA I KÖ!!! GÖR JOBBET UTANFÖR!!!
 	    if (!(GPIO_ReadInputData(GPIOB) & GPIO_Pin_12))
         {
-            USART1->DR = (uint16_t) 0 + '0';
-			
-			USART1->DR = (uint16_t) '\r';
-			while (!(USART1->SR & USART_SR_TXE)){}; // empty
+            txData.data = DATA_SWITCH_OPEN;
             GPIO_ResetBits(GPIOB, GPIO_Pin_13);
         }
         else
         {
-            USART1->DR = (uint16_t) 1 + '0';
-			while (!(USART1->SR & USART_SR_TXE)){}; // empty
-			USART1->DR = (uint16_t) '\r';
-			while (!(USART1->SR & USART_SR_TXE)){}; // empty
+            txData.data = DATA_SWITCH_CLOSED;
             GPIO_SetBits(GPIOB, GPIO_Pin_13);
         }	
 		
+		tx_dataStruct(txData);
 		EXTI->PR = (1 << EXT12);
 }
 
@@ -123,49 +128,13 @@ void ledInit()
     GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(GPIOC, &GPIO_InitStruct);
 	
-		GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
-		GPIO_InitStruct.GPIO_Pin = GPIO_Pin_13;
-		GPIO_Init(GPIOB, &GPIO_InitStruct);
-		GPIO_SetBits(GPIOB, GPIO_Pin_13);
-	}
-
-void usartInit()
-{
-		GPIO_InitTypeDef GPIO_InitStructure;
-    USART_InitTypeDef USART_InitStructure;
-
-    /* Enable peripheral clocks for USART1 on GPIOA */
-    RCC_APB2PeriphClockCmd(
-        RCC_APB2Periph_USART1 |
-        RCC_APB2Periph_GPIOA |
-        RCC_APB2Periph_AFIO, ENABLE);
-        
-    /* Configure PA9 and PA10 as USART1 TX/RX */
-    
-    /* PA9 = alternate function push/pull output */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-    
-    /* PA10 = floating input */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-    
-    /* Configure and initialize usart... */
-    USART_InitStructure.USART_BaudRate = 9600;
-    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-    USART_InitStructure.USART_StopBits = USART_StopBits_1;
-    USART_InitStructure.USART_Parity = USART_Parity_No;
-    USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-    USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-        
-    USART_Init(USART1, &USART_InitStructure);
-    
-    /* Enable USART1 */
-    USART_Cmd(USART1, ENABLE); 
+	GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_PP;
+	GPIO_InitStruct.GPIO_Pin = GPIO_Pin_13;
+	GPIO_Init(GPIOB, &GPIO_InitStruct);
+	GPIO_SetBits(GPIOB, GPIO_Pin_13);
 }
+
+
 
 void vTaskLedRed(void *p)
 {
@@ -193,3 +162,5 @@ void vTaskLedGreen(void *p)
         vTaskDelay(1000/portTICK_RATE_MS);
     }
 }
+
+
