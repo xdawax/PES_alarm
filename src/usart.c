@@ -1,4 +1,4 @@
-#include "../header/usart.h"
+#include "usart.h"
 
 
 void usartInit(uint32_t baudRate)

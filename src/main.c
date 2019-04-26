@@ -8,9 +8,9 @@
 #include "queue.h"
 #include "task.h"
 
-#include "../header/usart.h"
-#include "../header/defines.h"
-
+#include "usart.h"
+#include "defines.h"
+#include "packet.h"
 
 
 typedef struct txData {
