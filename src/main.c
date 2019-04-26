@@ -71,7 +71,11 @@ void interruptInit() {
 }
 
 void tx_dataStruct(txData_t data) {
-	
+	USART1->DR = data.sensorType;
+	while (!(USART1->SR & USART_SR_TXE)){}; // empty
+	USART1->DR = data.data;
+	while (!(USART1->SR & USART_SR_TXE)){}; // empty
+	USART1->DR = '\n';
 }
 
 void EXTI15_10_IRQHandler(void) {
@@ -79,7 +83,7 @@ void EXTI15_10_IRQHandler(void) {
 	    if (!(GPIO_ReadInputData(GPIOB) & GPIO_Pin_12))
         {
             USART1->DR = (uint16_t) 0 + '0';
-			while (!(USART1->SR & USART_SR_TXE)){}; // empty
+			
 			USART1->DR = (uint16_t) '\r';
 			while (!(USART1->SR & USART_SR_TXE)){}; // empty
             GPIO_ResetBits(GPIOB, GPIO_Pin_13);
