@@ -387,6 +387,36 @@
               <FileType>1</FileType>
               <FilePath>.\src\main.c</FilePath>
             </File>
+            <File>
+              <FileName>packet.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\packet.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\usart.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>header</GroupName>
+          <Files>
+            <File>
+              <FileName>defines.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\header\defines.h</FilePath>
+            </File>
+            <File>
+              <FileName>packet.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\header\packet.h</FilePath>
+            </File>
+            <File>
+              <FileName>usart.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\header\usart.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
