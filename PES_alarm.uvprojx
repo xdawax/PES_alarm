@@ -397,6 +397,11 @@
               <FileType>1</FileType>
               <FilePath>.\src\usart.c</FilePath>
             </File>
+            <File>
+              <FileName>rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\rtc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -416,6 +421,11 @@
               <FileName>usart.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\header\usart.h</FilePath>
+            </File>
+            <File>
+              <FileName>rtc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\header\rtc.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -561,8 +571,8 @@
       </file>
       <file attr="config" category="header" condition="CoreM" name="Config\ARMCM\FreeRTOSConfig.h" version="10.0.0">
         <instance index="0">RTE\RTOS\FreeRTOSConfig.h</instance>
-        <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Config" Cvariant="FreeRTOS" Cvendor="ARM" Cversion="10.0.1" condition="FreeRTOS Core"/>
-        <package license="License/license.txt" name="CMSIS-FreeRTOS" schemaVersion="1.4" url="http://www.keil.com/pack/" vendor="ARM" version="10.0.1"/>
+        <component Cbundle="FreeRTOS" Cclass="RTOS" Cgroup="Config" Cvariant="FreeRTOS" Cvendor="ARM" Cversion="10.2.0" condition="FreeRTOS Core"/>
+        <package license="License/license.txt" name="CMSIS-FreeRTOS" schemaVersion="1.4" url="http://www.keil.com/pack/" vendor="ARM" version="10.2.0"/>
         <targetInfos>
           <targetInfo name="STM32F103C8"/>
         </targetInfos>
