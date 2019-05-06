@@ -15,36 +15,28 @@
 #include "bt.h"
 #include "debug.h"
 
-
-typedef struct txData {
-	uint8_t sensorType;		// defines what type of sensor has read the data (1 == ALARM, 2 == ?, 3 == ? etc...)
-	uint8_t data;			// the data represented by an integer (if reed => 0 == switch open, 1 == switch closed)
-} txData_t;
-
-volatile txData_t txData;
+#define MY_ADRESS 0x01	// 0..255
 
 sensor_t my_type = REED;
+
+volatile packet_t packet;
 
 void ledInit(void);
 void reedInit(void);
 void interruptInit(void);
-void dataInit(uint8_t type, uint8_t data);
-
+packet_t packet_init(uint8_t adress, sensor_t sensor_type);
 
 
 int main(void)
 {
-    dataInit(TYPE_ALARM, DATA_SWITCH_OPEN); 
+	packet = packet_init(MY_ADRESS, my_type);
 	reedInit();
     ledInit();
 	usartInit(38400);
 	interruptInit();
 
 	packet_t pkt_test = packet_new();
-	
-	pkt_test.data = 5;
-	
-	print_packet(pkt_test);
+
 	while (1) {
 		
 	};
@@ -52,10 +44,13 @@ int main(void)
     
 }
 
-
-void dataInit(uint8_t type, uint8_t data) {
-	txData.sensorType = type;
-	txData.data = data;
+packet_t packet_init(uint8_t adress, sensor_t sensor_type) {
+	packet_t packet;
+	packet = packet_new();
+	packet.adress = adress;
+	packet.type = sensor_type;
+	
+	return packet;
 }
 
 void interruptInit() {
@@ -75,19 +70,17 @@ void interruptInit() {
 
 void EXTI15_10_IRQHandler(void) {
 		// POSTA I KÖ!!! GÖR JOBBET UTANFÖR!!!
-	    if (!(GPIO_ReadInputData(GPIOB) & GPIO_Pin_12))
+	    if (!(GPIOB->IDR & GPIO_Pin_12))
         {
-            txData.data = DATA_SWITCH_OPEN;
+            packet.data = !(GPIOB->IDR & GPIO_Pin_12);
             GPIO_ResetBits(GPIOB, GPIO_Pin_13);
         }
         else
         {
-            txData.data = DATA_SWITCH_CLOSED;
+            packet.data = (GPIOB->IDR & GPIO_Pin_12);
             GPIO_SetBits(GPIOB, GPIO_Pin_13);
         }	
-		USART_TX_buf((uint8_t*)"Sensor data: ", 13);
-		USART_TX_byte(txData.data + '0');
-		USART_TX_byte(txData.sensorType + '0');
+		print_packet(packet);
 		EXTI->PR = (1 << EXT12);
 }
 
