@@ -16,7 +16,7 @@
 typedef enum sensor_type {	// 1 byte if < 256 sensors
 	REED, 					// the data can be read from the reed_data enum
 	TEMP					// the data is read as centidegrees celcius i.e. 3275 == 32.75 deg C
-} type_t;
+} sensor_t;
 
 typedef enum reed_data {
 	DOOR_CLOSED,			// if the door is closed the pin value == 0
@@ -25,7 +25,7 @@ typedef enum reed_data {
 
 typedef struct packet {
 	uint8_t adress;
-	type_t type;
+	sensor_t type;
 	uint32_t data;
 	time_stamp_t  time_stamp;
 } packet_t;
@@ -39,28 +39,28 @@ typedef struct packet {
 /// @param adress[in] the adress of the transmitting unit
 ///
 /// @returns void
-void packet_set_adress(uint8_t adress);
+void packet_set_adress(packet_t *packet, uint8_t adress);
 
 /// Sets the type field in the packet struct
 ///
 /// @param type[in] the type of the sensor used to gather the data
 ///
 /// @returns void
-void packet_set_type(type_t type);
+void packet_set_type(packet_t *packet, sensor_t type);
 
 /// Sets the data field in the packet struct
 /// @ref sensor_type for data interpretation
 /// @param data[in] the data part of the packet
 ///
 /// @returns void
-void packet_set_data(uint32_t data);
+void packet_set_data(packet_t *packet, uint32_t data);
 
 /// Sets the time_stamp field in the packet struct
 ///
 /// @param time_stamp[in] the time at when the data was collected
 ///
 /// @returns void
-void packet_set_time(time_stamp_t time_stamp);
+void packet_set_time(packet_t *packet, time_stamp_t time_stamp);
 
 
 /********************** GETTERS ****************************/
@@ -69,23 +69,23 @@ void packet_set_time(time_stamp_t time_stamp);
 /// Retrieves the adress field in the packet struct
 ///
 /// @returns the transmitters adress
-uint8_t packet_get_adress(void);
+uint8_t packet_get_adress(packet_t *packet);
 
 /// Retrieves the type field in the packet struct
 ///
 /// @returns the type of the sensor responsible for the data
-type_t packet_get_type(void);
+sensor_t packet_get_type(packet_t *packet);
 
 /// Retrieves the data field in the struct 
 ///
 /// @ref sensor_type for data interpretation
 /// @returns the data of the packet
-uint32_t packet_get_data(void);
+uint32_t packet_get_data(packet_t *packet);
 
 /// Retrieves the time_stamp field in the packet struct
 ///
 /// @returns the time stamp for the packet
-time_stamp_t packet_get_time(void);
+time_stamp_t packet_get_time(packet_t *packet);
 
 
 /********************** TX/RX ****************************/

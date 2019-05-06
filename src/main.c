@@ -11,7 +11,7 @@
 #include "usart.h"
 #include "defines.h"
 #include "packet.h"
-
+#include "rtc.h"
 
 typedef struct txData {
 	uint8_t sensorType;		// defines what type of sensor has read the data (1 == ALARM, 2 == ?, 3 == ? etc...)
@@ -20,6 +20,7 @@ typedef struct txData {
 
 volatile txData_t txData;
 
+sensor_t my_type = REED;
 
 void ledInit(void);
 void reedInit(void);
@@ -36,7 +37,7 @@ int main(void)
     dataInit(TYPE_ALARM, DATA_SWITCH_OPEN); 
 	reedInit();
     ledInit();
-	usartInit(9600);
+	usartInit(38400);
 	interruptInit();
 	
     // Create LED blink task
