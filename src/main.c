@@ -35,8 +35,6 @@ int main(void)
 	usartInit(38400);
 	interruptInit();
 
-	packet_t pkt_test = packet_new();
-
 	while (1) {
 		
 	};

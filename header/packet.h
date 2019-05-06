@@ -5,11 +5,17 @@
 #include "rtc.h"
 
 /********************** DEFINES ****************************/
-
+//[adress, type, data, data, data, data, stamp, stamp, stamp, stamp, stamp]
 
 #define DATA_MAX_SIZE 32	// maximum number of bytes in the data field 0-255
 #define PACKET_SIZE sizeof(packet_t);
 #define TIME_STAMP_SIZE sizeof(time_stamp_t);
+#define BUF_ADRESS 0
+#define BUF_TYPE 1
+#define BUF_DATA 2
+#define BUF_STAMP 6
+
+
 /********************** TYPEDEFS ****************************/
 
 
