@@ -60,8 +60,8 @@ void USART_TX_buf(uint8_t buf[], uint8_t size) {
 	for (i = 0; i < size; i++) {
 		USART_TX_byte(buf[i]);
 	}
-
 }
+
 
 void USART_TX_byte(uint8_t byte) {
 	
@@ -75,3 +75,22 @@ uint8_t USART_RX_byte() {
 	while(!(USART1->SR & (1 << SR_RXNE))) {};
 	return USART1->DR;
 }
+
+void USART_TX_string(uint8_t buf[], uint8_t size) {
+	int i;
+	
+	for (i = 0; i < size; i++) {
+		USART_TX_char(buf[i]);
+	}
+}
+
+
+void USART_TX_char(uint8_t byte) {
+	
+	USART1->DR = byte + '0';
+	while (!(USART1->SR & USART_SR_TC)){}; // empty
+	USART1->DR = '\r';	
+	while (!(USART1->SR & USART_SR_TC)){}; // empty
+}
+
+

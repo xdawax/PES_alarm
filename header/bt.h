@@ -2,21 +2,28 @@
 #define BT_H_
 
 #include <stdint.h>
+#include "packet.h"
+#include "usart.h"
+#include "rtc.h"
 
 /// Transmits a buffer using the UART protocol
 ///
 /// @param buf[in] The buffer containing the packet data
 ///	@param size The length of the buffer to be transmitted
 ///
-/// @retuns void
-void BT_tx_data(uint8_t buf[], uint8_t size_t);
+/// @retuns true if the packet was sent
+bool tx_data(packet_t packet);
 
-/// Transmits a buffer using the UART protocol
+/// Receives a buffer using the UART protocol
 ///
-/// @param buf[in] The buffer containing the packet data
-///	@param size The length of the buffer to be transmitted
-///
-/// @retuns void
-void BT_register_event(uint8_t buf[], uint8_t size_t);
+/// @retuns the received packet
+packet_t rx_data(void);
 
+
+
+///
+/// DEBUG
+///
+
+bool tx_string(packet_t packet);
 #endif

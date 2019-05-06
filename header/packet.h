@@ -27,12 +27,16 @@ typedef struct packet {
 	uint8_t adress;
 	sensor_t type;
 	uint32_t data;
-	time_stamp_t  time_stamp;
+	//time_stamp_t  time_stamp;		// TODO
 } packet_t;
 
 
 /********************** SETTERS ****************************/
 
+/// Initiates a packet with 0 in all fields
+///
+/// @returns a packet with all fields set to 0
+packet_t packet_new(void);
 
 /// Sets the adress field in the packet struct
 ///
@@ -121,7 +125,7 @@ packet_t buf_to_packet(uint8_t buf[]);
 /// @param packet[in] the packet to be converted
 /// @param buf[out] the buffer to be filled
 ///
-/// @return void
-void packet_to_buf(uint8_t buf[], packet_t packet);
+/// @return the number of bytes in the packet
+uint8_t packet_to_buf(uint8_t buf[], packet_t packet);
 
 #endif

@@ -423,11 +423,6 @@
               <FilePath>.\header\packet.h</FilePath>
             </File>
             <File>
-              <FileName>usart.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\header\usart.h</FilePath>
-            </File>
-            <File>
               <FileName>rtc.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\header\rtc.h</FilePath>
@@ -436,6 +431,11 @@
               <FileName>bt.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\header\bt.h</FilePath>
+            </File>
+            <File>
+              <FileName>usart.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\header\usart.h</FilePath>
             </File>
           </Files>
         </Group>
