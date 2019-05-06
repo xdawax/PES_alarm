@@ -38,3 +38,37 @@ void usartInit(uint32_t baudRate)
     /* Enable USART1 */
     USART_Cmd(USART1, ENABLE); 
 }
+
+uint8_t USART_RX_buf(uint8_t buf[]) {
+	
+	uint8_t index = 0;
+	uint8_t received = 1;
+	while (received != '\r') {
+		received = USART_RX_byte();
+		buf[index] = received;
+		USART_TX_byte(buf[index]);
+		index++;
+	}
+		
+	return index;
+}
+
+
+void USART_TX_buf(uint8_t buf[], uint8_t size) {
+	int i;
+	
+	for (i = 0; i < size; i++) {
+		USART_TX_byte(buf[i]);
+	}
+
+}
+
+void USART_TX_byte(uint8_t byte) {
+	USART1->DR = byte;
+	while(!(USART1->SR & (1 << 6)));
+}
+
+uint8_t USART_RX_byte() {
+	while(!(USART1->SR & (1 << SR_RXNE))) {};
+	return USART1->DR;
+}

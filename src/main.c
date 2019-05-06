@@ -74,8 +74,7 @@ void interruptInit() {
 }
 
 void tx_dataStruct(txData_t data) {
-	USART1->DR = data.sensorType + '0';
-	while (!(USART1->SR & USART_SR_TXE)){}; // empty
+
 	USART1->DR = data.data + '0';
 	while (!(USART1->SR & USART_SR_TXE)){}; // empty
 	USART1->DR = '\n';
