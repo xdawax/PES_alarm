@@ -1,5 +1,5 @@
-#ifndef EEPROM_H_
-#define EEPROM_H_
+#ifndef USART_H_
+#define USART_H_
 
 #include <stdint.h>
 #include "GPIO_STM32F10x.h"             // Keil::Device:GPIO

@@ -402,6 +402,11 @@
               <FileType>1</FileType>
               <FilePath>.\src\rtc.c</FilePath>
             </File>
+            <File>
+              <FileName>bt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\bt.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -426,6 +431,11 @@
               <FileName>rtc.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\header\rtc.h</FilePath>
+            </File>
+            <File>
+              <FileName>bt.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\header\bt.h</FilePath>
             </File>
           </Files>
         </Group>
