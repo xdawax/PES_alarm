@@ -20,10 +20,5 @@ bool tx_data(packet_t packet);
 packet_t rx_data(void);
 
 
-
-///
-/// DEBUG
-///
-
 bool tx_string(packet_t packet);
 #endif

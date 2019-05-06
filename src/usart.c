@@ -67,8 +67,8 @@ void USART_TX_byte(uint8_t byte) {
 	
 	USART1->DR = byte;
 	while (!(USART1->SR & USART_SR_TC)){}; // empty
-	USART1->DR = '\r';	
-	while (!(USART1->SR & USART_SR_TC)){}; // empty
+	//USART1->DR = '\r';	
+	//while (!(USART1->SR & USART_SR_TC)){}; // empty
 }
 
 uint8_t USART_RX_byte() {

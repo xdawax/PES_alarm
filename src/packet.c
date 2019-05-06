@@ -1,5 +1,5 @@
 #include "packet.h"
-
+#include "usart.h"
 
 uint8_t packet_to_buf(uint8_t buf[], packet_t packet) {
 	uint8_t i;
@@ -27,3 +27,8 @@ packet_t packet_new() {
 	return packet;
 	
 }
+
+
+
+
+

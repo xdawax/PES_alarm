@@ -13,6 +13,8 @@
 #include "packet.h"
 #include "rtc.h"
 #include "bt.h"
+#include "debug.h"
+
 
 typedef struct txData {
 	uint8_t sensorType;		// defines what type of sensor has read the data (1 == ALARM, 2 == ?, 3 == ? etc...)
@@ -40,8 +42,9 @@ int main(void)
 
 	packet_t pkt_test = packet_new();
 	
-	pkt_test.data = 'a';
-	tx_string(pkt_test);
+	pkt_test.data = 5;
+	
+	print_packet(pkt_test);
 	while (1) {
 		
 	};

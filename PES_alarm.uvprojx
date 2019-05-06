@@ -407,6 +407,11 @@
               <FileType>1</FileType>
               <FilePath>.\src\bt.c</FilePath>
             </File>
+            <File>
+              <FileName>debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\debug.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -436,6 +441,11 @@
               <FileName>usart.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\header\usart.h</FilePath>
+            </File>
+            <File>
+              <FileName>debug.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\header\debug.h</FilePath>
             </File>
           </Files>
         </Group>
