@@ -134,7 +134,8 @@ packet_t buf_to_packet(uint8_t buf[]);
 
 /// Converts a packet struct to an 8-bit buffer 
 /// [adress, type, data, data, data, data, stamp, stamp, stamp, stamp, stamp] bytes [0 .. 11]
-/// 
+/// Using little endian for the 32-bit data
+///
 /// @param packet[in] the packet to be converted
 /// @param buf[out] the buffer to be filled
 ///
