@@ -12,8 +12,15 @@
 #define TIME_STAMP_SIZE sizeof(time_stamp_t);
 #define BUF_ADRESS 0
 #define BUF_TYPE 1
-#define BUF_DATA 2
-#define BUF_STAMP 6
+#define BUF_DATA0 2
+#define BUF_DATA1 3
+#define BUF_DATA2 4
+#define BUF_DATA3 5
+#define BUF_STAMP0 6
+#define BUF_STAMP1 7
+#define BUF_STAMP2 8
+#define BUF_STAMP3 9
+#define BUF_STAMP4 10
 
 
 /********************** TYPEDEFS ****************************/

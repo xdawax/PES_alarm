@@ -17,7 +17,7 @@
 
 #define MY_ADRESS 0x01	// 0..255
 
-sensor_t my_type = REED;
+sensor_t my_type = TEMP;
 
 volatile packet_t packet;
 
@@ -70,14 +70,16 @@ void EXTI15_10_IRQHandler(void) {
 		// POSTA I KÖ!!! GÖR JOBBET UTANFÖR!!!
 	    if (!(GPIOB->IDR & GPIO_Pin_12))
         {
-            packet.data = !(GPIOB->IDR & GPIO_Pin_12);
+            packet.data = 6666666;//!(GPIOB->IDR & GPIO_Pin_12);
             GPIO_ResetBits(GPIOB, GPIO_Pin_13);
         }
         else
         {
-            packet.data = (GPIOB->IDR & GPIO_Pin_12);
+            packet.data = 1111111; //(GPIOB->IDR & GPIO_Pin_12);
             GPIO_SetBits(GPIOB, GPIO_Pin_13);
         }	
+		
+		tx_data(packet);
 		print_packet(packet);
 		EXTI->PR = (1 << EXT12);
 }

@@ -2,13 +2,22 @@
 
 #define MAX_BUF_SIZE sizeof(packet_t)
 
+void empty_buf(uint8_t buf[]) {
+	for (int i = 0; i < MAX_BUF_SIZE; i++) {
+		buf[i] = 0;
+	}
+}
+
 bool tx_data(packet_t packet) {
+	
 	uint8_t buf[MAX_BUF_SIZE];
-	uint8_t buf_size = 0;
+	empty_buf(buf);
 	
-	buf_size = packet_to_buf(buf, packet);
+	uint8_t bytes = 0;
 	
-	USART_TX_buf(buf, buf_size);	
+	bytes = packet_to_buf(buf, packet);
+	
+	USART_TX_buf(buf, bytes);	
 	
 	return true;
 }
