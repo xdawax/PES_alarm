@@ -26,10 +26,7 @@ void ledInit(void);
 void reedInit(void);
 void interruptInit(void);
 void dataInit(uint8_t type, uint8_t data);
-// RTOS task
-void vTaskLedRed(void *p);
-void vTaskLedYellow(void *p);
-void vTaskLedGreen(void *p);
+
 
 
 int main(void)
@@ -39,18 +36,13 @@ int main(void)
     ledInit();
 	usartInit(38400);
 	interruptInit();
-	
-    // Create LED blink task
-    xTaskCreate(vTaskLedRed, (const char*) "Red LED Blink", 
-        128, NULL, 1, NULL);
-    xTaskCreate(vTaskLedYellow, (const char*) "Yellow LED Blink",
-        128, NULL, 1, NULL);
-    xTaskCreate(vTaskLedGreen, (const char*) "Green LED Blink", 128, NULL, 1, NULL);
-	
-	//Start RTOS scheduler
-    vTaskStartScheduler();
 
-    return 0;
+	
+	while (1) {
+		
+	};
+
+    
 }
 
 
@@ -73,13 +65,6 @@ void interruptInit() {
 	__enable_irq();
 }
 
-void tx_dataStruct(txData_t data) {
-
-	USART1->DR = data.data + '0';
-	while (!(USART1->SR & USART_SR_TXE)){}; // empty
-	USART1->DR = '\n';
-	while (!(USART1->SR & USART_SR_TXE)){}; // empty
-}
 
 void EXTI15_10_IRQHandler(void) {
 		// POSTA I KÖ!!! GÖR JOBBET UTANFÖR!!!
@@ -93,8 +78,9 @@ void EXTI15_10_IRQHandler(void) {
             txData.data = DATA_SWITCH_CLOSED;
             GPIO_SetBits(GPIOB, GPIO_Pin_13);
         }	
-		
-		tx_dataStruct(txData);
+		USART_TX_buf((uint8_t*)"Sensor data: ", 13);
+		USART_TX_byte(txData.data + '0');
+		USART_TX_byte(txData.sensorType + '0');
 		EXTI->PR = (1 << EXT12);
 }
 
@@ -128,32 +114,5 @@ void ledInit()
 }
 
 
-
-void vTaskLedRed(void *p)
-{
-	  for (;;)
-    {
-        GPIOC->ODR ^= GPIO_Pin_14;
-        vTaskDelay(100/portTICK_RATE_MS);
-    }
-}
-
-void vTaskLedYellow(void *p)
-{
-    for (;;)
-    {
-        GPIOC->ODR ^= GPIO_Pin_15;
-        vTaskDelay(1000/portTICK_RATE_MS);
-    }
-}
-
-void vTaskLedGreen(void *p)
-{
-    for (;;)
-    {
-        GPIOC->ODR ^= GPIO_Pin_13;
-        vTaskDelay(1000/portTICK_RATE_MS);
-    }
-}
 
 
