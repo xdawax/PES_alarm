@@ -21,7 +21,8 @@
 sensor_t my_type = TEMP;
 
 volatile packet_t packet;
-QueueHandle_t data_queue;
+QueueHandle_t tx_queue;
+QueueHandle_t rx_queue;
 
 // Functions
 void ledInit(void);
@@ -43,11 +44,11 @@ int main(void)
 	usartInit(38400);
 	interruptInit();
 
-	data_queue = xQueueCreate(QUEUE_LENGTH, QUEUE_ITEM_SIZE);
-	task_creation = xTaskCreate(data_transmitter, "Data TX", 100, NULL, configMAX_PRIORITIES - 1, NULL);
+	tx_queue = xQueueCreate(QUEUE_LENGTH, QUEUE_ITEM_SIZE);
+	rx_queue = xQueueCreate(QUEUE_LENGTH, QUEUE_ITEM_SIZE);
 	
 	packet_t packet_to_transmit;
-	//vTaskStartScheduler();
+
 	
 	
 	if (task_creation == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY ) {
@@ -55,8 +56,8 @@ int main(void)
 	}
 	
 	while (1) {
-		if (uxQueueMessagesWaiting(data_queue)) {
-			xQueueReceive(data_queue, &packet_to_transmit, 100);
+		if (uxQueueMessagesWaiting(tx_queue)) {
+			xQueueReceive(tx_queue, &packet_to_transmit, 100);
 			tx_data(packet_to_transmit);
 			print_packet(packet_to_transmit);
 		}
@@ -97,6 +98,8 @@ void interruptInit() {
 }
 
 
+
+// Interrupt for event
 void EXTI15_10_IRQHandler(void) {
 	
 	BaseType_t xHigherPriorityTaskWoken;
@@ -104,7 +107,6 @@ void EXTI15_10_IRQHandler(void) {
     /* We have not woken a task at the start of the ISR. */
     xHigherPriorityTaskWoken = pdFALSE;
 
-	// POSTA I KÖ!!! GÖR JOBBET UTANFÖR!!!
     if (!(GPIOB->IDR & GPIO_Pin_12)) {
 		packet.data = DATA_SWITCH_OPEN;
 		GPIO_ResetBits(GPIOB, GPIO_Pin_13);
@@ -114,7 +116,7 @@ void EXTI15_10_IRQHandler(void) {
         GPIO_SetBits(GPIOB, GPIO_Pin_13);
     }	
 	uint32_t d = packet.data;
-	xQueueSendToBackFromISR(data_queue, (void*)&packet, NULL);
+	xQueueSendToBackFromISR(tx_queue, (void*)&packet, &xHigherPriorityTaskWoken);
 	EXTI->PR = (1 << EXT12);
 }
 
