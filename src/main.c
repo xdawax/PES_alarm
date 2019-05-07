@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <assert.h>
 
 #include "stm32f10x.h"
 #include "stm32f10x_rcc.h"
@@ -22,33 +23,54 @@ sensor_t my_type = TEMP;
 volatile packet_t packet;
 QueueHandle_t data_queue;
 
+// Functions
 void ledInit(void);
 void reedInit(void);
 void interruptInit(void);
 packet_t packet_init(uint8_t adress, sensor_t sensor_type);
 
+// Tasks
+void data_transmitter(void *pvParameters);
+
 
 int main(void)
 {
-	int x = 0;
+	BaseType_t task_creation;
+	
 	packet = packet_init(MY_ADRESS, my_type);
 	reedInit();
     ledInit();
 	usartInit(38400);
 	interruptInit();
-	data_queue = xQueueCreate(QUEUE_LENGTH, QUEUE_ITEM_SIZE);
 
-	if (data_queue == NULL) {
-		x++;
-		x++;
+	data_queue = xQueueCreate(QUEUE_LENGTH, QUEUE_ITEM_SIZE);
+	task_creation = xTaskCreate(data_transmitter, "Data TX", 100, NULL, configMAX_PRIORITIES - 1, NULL);
+	
+	packet_t packet_to_transmit;
+	//vTaskStartScheduler();
+	
+	
+	if (task_creation == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY ) {
+		assert(false);
 	}
 	
-	
 	while (1) {
-
+		if (uxQueueMessagesWaiting(data_queue)) {
+			xQueueReceive(data_queue, &packet_to_transmit, 100);
+			tx_data(packet_to_transmit);
+			print_packet(packet_to_transmit);
+		}
 	};
 
     
+}
+
+
+void data_transmitter(void *pvParameters) {
+	while (1) {
+		USART_TX_char(0);
+		vTaskDelay(1000 / portTICK_RATE_MS);		// change to delay until
+	}
 }
 
 packet_t packet_init(uint8_t adress, sensor_t sensor_type) {
@@ -76,21 +98,24 @@ void interruptInit() {
 
 
 void EXTI15_10_IRQHandler(void) {
-		// POSTA I KÖ!!! GÖR JOBBET UTANFÖR!!!
-	    if (!(GPIOB->IDR & GPIO_Pin_12))
-        {
-            packet.data = 6666666;//!(GPIOB->IDR & GPIO_Pin_12);
-            GPIO_ResetBits(GPIOB, GPIO_Pin_13);
-        }
-        else
-        {
-            packet.data = 1111111; //(GPIOB->IDR & GPIO_Pin_12);
-            GPIO_SetBits(GPIOB, GPIO_Pin_13);
-        }	
-		
-		tx_data(packet);
-		print_packet(packet);
-		EXTI->PR = (1 << EXT12);
+	
+	BaseType_t xHigherPriorityTaskWoken;
+
+    /* We have not woken a task at the start of the ISR. */
+    xHigherPriorityTaskWoken = pdFALSE;
+
+	// POSTA I KÖ!!! GÖR JOBBET UTANFÖR!!!
+    if (!(GPIOB->IDR & GPIO_Pin_12)) {
+		packet.data = DATA_SWITCH_OPEN;
+		GPIO_ResetBits(GPIOB, GPIO_Pin_13);
+    }
+    else {
+		packet.data = DATA_SWITCH_CLOSED;
+        GPIO_SetBits(GPIOB, GPIO_Pin_13);
+    }	
+	uint32_t d = packet.data;
+	xQueueSendToBackFromISR(data_queue, (void*)&packet, NULL);
+	EXTI->PR = (1 << EXT12);
 }
 
 void reedInit()
