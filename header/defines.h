@@ -6,7 +6,7 @@
 #define TYPE_ALARM 1
 #define DATA_SWITCH_OPEN 0
 #define DATA_SWITCH_CLOSED 1
-#define QUEUE_LENGTH 100
-#define QUEUE_ITEM_SIZE sizeof(txData)
+#define QUEUE_LENGTH 20
+#define QUEUE_ITEM_SIZE sizeof(packet_t)
 	
 #endif

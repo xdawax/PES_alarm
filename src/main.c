@@ -20,6 +20,7 @@
 sensor_t my_type = TEMP;
 
 volatile packet_t packet;
+QueueHandle_t data_queue;
 
 void ledInit(void);
 void reedInit(void);
@@ -29,14 +30,22 @@ packet_t packet_init(uint8_t adress, sensor_t sensor_type);
 
 int main(void)
 {
+	int x = 0;
 	packet = packet_init(MY_ADRESS, my_type);
 	reedInit();
     ledInit();
 	usartInit(38400);
 	interruptInit();
+	data_queue = xQueueCreate(QUEUE_LENGTH, QUEUE_ITEM_SIZE);
 
+	if (data_queue == NULL) {
+		x++;
+		x++;
+	}
+	
+	
 	while (1) {
-		
+
 	};
 
     
