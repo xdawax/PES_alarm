@@ -16,9 +16,9 @@
 #include "bt.h"
 #include "debug.h"
 
-#define MY_ADRESS 0x01	// 0..255
+#define MY_ADRESS 0x07	// 0..255
 
-sensor_t my_type = TEMP;
+sensor_t my_type = REED;
 
 volatile packet_t packet;
 QueueHandle_t tx_queue;
@@ -56,11 +56,13 @@ int main(void)
 	}
 	
 	while (1) {
+		
 		if (uxQueueMessagesWaiting(tx_queue)) {
 			xQueueReceive(tx_queue, &packet_to_transmit, 100);
-			tx_data(packet_to_transmit);
+			//tx_data(packet_to_transmit);
 			print_packet(packet_to_transmit);
 		}
+		
 	};
 
     
