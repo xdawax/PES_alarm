@@ -59,8 +59,8 @@ int main(void)
 		
 		if (uxQueueMessagesWaiting(tx_queue)) {
 			xQueueReceive(tx_queue, &packet_to_transmit, 100);
-			tx_data(packet_to_transmit);
-			//print_packet(packet_to_transmit);
+			//tx_data(packet_to_transmit);
+			print_packet(packet_to_transmit);
 		}
 		
 	};
@@ -119,7 +119,7 @@ void EXTI15_10_IRQHandler(void) {
     }	
 
 	packet.sequence++;
-	
+	uint8_t seq = packet.sequence;
 	xQueueSendToBackFromISR(tx_queue, (void*)&packet, &xHigherPriorityTaskWoken);
 	EXTI->PR = (1 << EXT12);
 }

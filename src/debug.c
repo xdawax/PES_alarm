@@ -21,5 +21,8 @@ void print_packet(packet_t packet) {
 
 	USART_TX_buf((uint8_t*)"Adress: ", 8);
 	USART_TX_char(packet.address);
+	USART_TX_buf((uint8_t*)"\r\n", 3);
+	USART_TX_buf((uint8_t*)"Sequence: ", 10);
+	USART_TX_char(packet.sequence);
 	USART_TX_buf((uint8_t*)"\r\n", 3);	
 }
