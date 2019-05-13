@@ -26,3 +26,25 @@ void print_packet(packet_t packet) {
 	USART_TX_char(packet.sequence);
 	USART_TX_buf((uint8_t*)"\r\n", 3);	
 }
+
+void test_buf_to_packet() {
+	uint8_t buf[255];
+	packet_t original_packet = packet_new();
+	packet_t packet_from_buf;
+	
+	original_packet.address = 1;
+	original_packet.data = 123456789;
+	original_packet.sequence = 5;
+	original_packet.type = REED;
+	
+	packet_to_buf(buf, original_packet);
+	packet_from_buf = buf_to_packet(buf);
+	
+	print_packet(original_packet);
+	print_packet(packet_from_buf);
+		
+}
+
+
+
+

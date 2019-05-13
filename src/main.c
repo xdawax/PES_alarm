@@ -54,13 +54,14 @@ int main(void)
 	if (task_creation == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY ) {
 		assert(false);
 	}
-	
+	test_buf_to_packet();
 	while (1) {
 		
 		if (uxQueueMessagesWaiting(tx_queue)) {
 			xQueueReceive(tx_queue, &packet_to_transmit, 100);
-			tx_data(packet_to_transmit);
+			//tx_data(packet_to_transmit);
 			//print_packet(packet_to_transmit);
+			test_buf_to_packet();
 		}
 		
 	};

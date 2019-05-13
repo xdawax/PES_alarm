@@ -9,7 +9,7 @@
 /***************** PACKET DEBUGS *****************/
 
 void print_packet(packet_t packet);
-
+void test_buf_to_packet(void);
 
 
 
