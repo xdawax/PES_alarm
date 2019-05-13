@@ -6,6 +6,9 @@
 #include "usart.h"
 #include "rtc.h"
 
+#define ACK_WAIT_TIME 20				// in ms
+#define MAX_BUF_SIZE sizeof(packet_t)
+	
 /// Transmits a buffer using the UART protocol
 ///
 /// @param buf[in] The buffer containing the packet data
@@ -19,6 +22,7 @@ bool tx_data(packet_t packet);
 /// @retuns the received packet
 packet_t rx_data(void);
 
+bool wait_for_ack(void);
 
 bool tx_string(packet_t packet);
 #endif

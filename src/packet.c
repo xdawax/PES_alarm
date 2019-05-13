@@ -50,3 +50,8 @@ packet_t packet_new() {
 	
 }
 
+bool packet_is_ack(packet_t packet) {
+	
+	return false;
+}
+

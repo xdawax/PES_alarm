@@ -1,7 +1,5 @@
 #include "bt.h"
 
-#define MAX_BUF_SIZE sizeof(packet_t)
-
 void empty_buf(uint8_t buf[]) {
 	for (int i = 0; i < MAX_BUF_SIZE; i++) {
 		buf[i] = 0;
@@ -26,6 +24,22 @@ packet_t rx_data() {
 	packet_t packet;
 	
 	return packet;
+}
+
+bool wait_for_ack() {
+	uint16_t ticks = 0;
+	packet_t packet;
+	
+	while (ticks < ACK_WAIT_TIME) {
+		if (USART_data_available()) {
+			packet = rx_data();
+		}
+		if (packet_is_ack(packet)) {
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 bool received_ack(packet_t packet) {

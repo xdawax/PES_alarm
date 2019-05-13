@@ -29,5 +29,8 @@ void USART_TX_char(uint8_t byte);
 void USART_TX_string(uint8_t buf[], uint8_t size);
 uint8_t USART_RX_byte(void);
 
+// checks if there is data to be read
+bool USART_data_available(void);
 
 #endif
+

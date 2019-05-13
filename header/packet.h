@@ -1,6 +1,7 @@
 #ifndef PACKET_H_
 #define PACKET_H_
 
+#include <stdbool.h>
 #include <stdint.h>
 #include "rtc.h"
 
@@ -117,7 +118,7 @@ void packet_TX(packet_t packet);
 /// @returns packet_t the retrieved data in form of the packet struct
 packet_t packet_RX(void);
 
-
+bool packet_is_ack(packet_t packet);
 /******************* PACKET <-> BUF **********************/
 
 

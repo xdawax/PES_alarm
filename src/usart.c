@@ -62,6 +62,9 @@ void USART_TX_buf(uint8_t buf[], uint8_t size) {
 	}
 }
 
+bool USART_data_available(void) {
+	return (USART1->SR & USART_SR_RXNE);
+}
 
 void USART_TX_byte(uint8_t byte) {
 	USART1->DR = byte;

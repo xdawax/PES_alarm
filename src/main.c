@@ -15,6 +15,7 @@
 #include "rtc.h"
 #include "bt.h"
 #include "debug.h"
+#include "delay.h"
 
 #define MY_ADDRESS 0x07	// 0..255
 
@@ -48,20 +49,20 @@ int main(void)
 	rx_queue = xQueueCreate(QUEUE_LENGTH, QUEUE_ITEM_SIZE);
 	
 	packet_t packet_to_transmit;
-
-	
 	
 	if (task_creation == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY ) {
 		assert(false);
 	}
-	test_buf_to_packet();
+
 	while (1) {
+
 		
 		if (uxQueueMessagesWaiting(tx_queue)) {
 			xQueueReceive(tx_queue, &packet_to_transmit, 100);
-			//tx_data(packet_to_transmit);
+			tx_data(packet_to_transmit);
+			wait_for_ack();
 			//print_packet(packet_to_transmit);
-			test_buf_to_packet();
+			//test_buf_to_packet();
 		}
 		
 	};

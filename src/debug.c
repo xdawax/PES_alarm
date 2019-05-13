@@ -4,6 +4,7 @@
 void print_packet(packet_t packet) {
 	USART_TX_buf((uint8_t*)"PACKET CONTENTS: \r\n", 19);
 	sensor_t type = packet.type;
+	
 	switch (type) {
 		case REED:
 			USART_TX_buf((uint8_t*)"Type: REED\r\n", 12);
