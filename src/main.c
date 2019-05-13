@@ -16,9 +16,9 @@
 #include "bt.h"
 #include "debug.h"
 
-#define MY_ADRESS 0x07	// 0..255
+#define MY_ADDRESS 0x07	// 0..255
 
-sensor_t my_type = REED;
+sensor_t my_type = TEMP;
 
 volatile packet_t packet;
 QueueHandle_t tx_queue;
@@ -28,7 +28,7 @@ QueueHandle_t rx_queue;
 void ledInit(void);
 void reedInit(void);
 void interruptInit(void);
-packet_t packet_init(uint8_t adress, sensor_t sensor_type);
+packet_t packet_init(uint8_t address, sensor_t sensor_type);
 
 // Tasks
 void data_transmitter(void *pvParameters);
@@ -38,7 +38,7 @@ int main(void)
 {
 	BaseType_t task_creation;
 	
-	packet = packet_init(MY_ADRESS, my_type);
+	packet = packet_init(MY_ADDRESS, my_type);
 	reedInit();
     ledInit();
 	usartInit(38400);
@@ -59,8 +59,8 @@ int main(void)
 		
 		if (uxQueueMessagesWaiting(tx_queue)) {
 			xQueueReceive(tx_queue, &packet_to_transmit, 100);
-			//tx_data(packet_to_transmit);
-			print_packet(packet_to_transmit);
+			tx_data(packet_to_transmit);
+			//print_packet(packet_to_transmit);
 		}
 		
 	};
@@ -76,10 +76,10 @@ void data_transmitter(void *pvParameters) {
 	}
 }
 
-packet_t packet_init(uint8_t adress, sensor_t sensor_type) {
+packet_t packet_init(uint8_t address, sensor_t sensor_type) {
 	packet_t packet;
 	packet = packet_new();
-	packet.adress = adress;
+	packet.address = address;
 	packet.type = sensor_type;
 	
 	return packet;
@@ -117,7 +117,9 @@ void EXTI15_10_IRQHandler(void) {
 		packet.data = DATA_SWITCH_CLOSED;
         GPIO_SetBits(GPIOB, GPIO_Pin_13);
     }	
-	uint32_t d = packet.data;
+
+	packet.sequence++;
+	
 	xQueueSendToBackFromISR(tx_queue, (void*)&packet, &xHigherPriorityTaskWoken);
 	EXTI->PR = (1 << EXT12);
 }

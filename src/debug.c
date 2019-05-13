@@ -20,6 +20,6 @@ void print_packet(packet_t packet) {
 	USART_TX_buf((uint8_t*)"\r\n", 2);
 
 	USART_TX_buf((uint8_t*)"Adress: ", 8);
-	USART_TX_char(packet.adress);
+	USART_TX_char(packet.address);
 	USART_TX_buf((uint8_t*)"\r\n", 3);	
 }

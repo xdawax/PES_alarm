@@ -5,23 +5,18 @@
 #include "rtc.h"
 
 /********************** DEFINES ****************************/
-//[adress, type, data, data, data, data, stamp, stamp, stamp, stamp, stamp]
+//[address, type, data, data, data, data, stamp, stamp, stamp, stamp, stamp]
 
 #define DATA_MAX_SIZE 32	// maximum number of bytes in the data field 0-255
 #define PACKET_SIZE sizeof(packet_t);
 #define TIME_STAMP_SIZE sizeof(time_stamp_t);
-#define BUF_ADRESS 0
+#define BUF_ADDRESS 0
 #define BUF_TYPE 1
 #define BUF_DATA0 2
 #define BUF_DATA1 3
 #define BUF_DATA2 4
 #define BUF_DATA3 5
-#define BUF_STAMP0 6
-#define BUF_STAMP1 7
-#define BUF_STAMP2 8
-#define BUF_STAMP3 9
-#define BUF_STAMP4 10
-
+#define BUF_SEQUENCE 6
 
 /********************** TYPEDEFS ****************************/
 
@@ -37,9 +32,10 @@ typedef enum reed_data {
 } reed_data_t;
 
 typedef struct packet {
-	uint8_t adress;
+	uint8_t address;
 	sensor_t type;
 	uint32_t data;
+	uint8_t sequence;
 	//time_stamp_t  time_stamp;		// TODO
 } packet_t;
 
@@ -51,12 +47,12 @@ typedef struct packet {
 /// @returns a packet with all fields set to 0
 packet_t packet_new(void);
 
-/// Sets the adress field in the packet struct
+/// Sets the address field in the packet struct
 ///
-/// @param adress[in] the adress of the transmitting unit
+/// @param address[in] the address of the transmitting unit
 ///
 /// @returns void
-void packet_set_adress(packet_t *packet, uint8_t adress);
+void packet_set_address(packet_t *packet, uint8_t address);
 
 /// Sets the type field in the packet struct
 ///
@@ -83,10 +79,10 @@ void packet_set_time(packet_t *packet, time_stamp_t time_stamp);
 /********************** GETTERS ****************************/
 
 
-/// Retrieves the adress field in the packet struct
+/// Retrieves the address field in the packet struct
 ///
-/// @returns the transmitters adress
-uint8_t packet_get_adress(packet_t *packet);
+/// @returns the transmitters address
+uint8_t packet_get_address(packet_t *packet);
 
 /// Retrieves the type field in the packet struct
 ///
@@ -133,7 +129,7 @@ packet_t packet_RX(void);
 packet_t buf_to_packet(uint8_t buf[]);
 
 /// Converts a packet struct to an 8-bit buffer 
-/// [adress, type, data, data, data, data, stamp, stamp, stamp, stamp, stamp] bytes [0 .. 11]
+/// [address, type, data, data, data, data, stamp, stamp, stamp, stamp, stamp] bytes [0 .. 11]
 /// Using little endian for the 32-bit data
 ///
 /// @param packet[in] the packet to be converted

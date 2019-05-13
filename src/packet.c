@@ -5,7 +5,7 @@ uint8_t packet_to_buf(uint8_t buf[], packet_t packet) {
 	
 	uint8_t size = 0;
 	
-	buf[BUF_ADRESS] = packet.adress;
+	buf[BUF_ADDRESS] = packet.address;
 	size++;
 	buf[BUF_TYPE] = packet.type;
 	size++;
@@ -16,6 +16,8 @@ uint8_t packet_to_buf(uint8_t buf[], packet_t packet) {
 	buf[BUF_DATA2] = (packet.data >> 8 * 2); 
 	size++;
 	buf[BUF_DATA3] = (packet.data >> 8 * 3); 
+	size++;
+	buf[BUF_SEQUENCE] = packet.sequence;
 	size++;
 	//buf[BUF_STAMP] = packet.time_stamp;	// TODO
 	//size++;
@@ -32,10 +34,10 @@ packet_t buf_to_packet(uint8_t buf[]) {
 packet_t packet_new() {
 	packet_t packet;
 	
-	packet.adress = 0;
+	packet.address = 0;
 	packet.data   = 0;
 	packet.type   = REED;
-	
+	packet.sequence = 0;
 	return packet;
 	
 }
