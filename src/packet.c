@@ -28,6 +28,17 @@ uint8_t packet_to_buf(uint8_t buf[], packet_t packet) {
 packet_t buf_to_packet(uint8_t buf[]) {
 	packet_t packet;
 	
+	uint32_t data = 0;
+	data |= (buf[BUF_DATA0] >> (3 * 8));
+	data |= (buf[BUF_DATA1] >> (1 * 8));
+	data |= (buf[BUF_DATA2] << (1 * 8));
+	data |= (buf[BUF_DATA3] << (3 * 8));
+	
+	packet.address = buf[BUF_ADDRESS];
+	packet.type = buf[BUF_TYPE];
+	packet.data = data;
+	packet.sequence = buf[BUF_SEQUENCE];
+	
 	return packet;
 }
 

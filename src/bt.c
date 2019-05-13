@@ -28,6 +28,10 @@ packet_t rx_data() {
 	return packet;
 }
 
+bool received_ack(packet_t packet) {
+	return true;
+}
+
 bool tx_string(packet_t packet) {
 	uint8_t buf[MAX_BUF_SIZE];
 	uint8_t buf_size = 0;
