@@ -17,7 +17,7 @@
 #include "debug.h"
 #include "delay.h"
 
-#define MY_ADDRESS 0x07	// 0..255
+#define MY_ADDRESS (*(unsigned long *)0x1FFFF7E8)		// 16 lsb of the device id
 #define TX_ATTEMPTS 5
 sensor_t my_type = TEMP;
 
@@ -29,7 +29,7 @@ QueueHandle_t rx_queue;
 void ledInit(void);
 void reedInit(void);
 void interruptInit(void);
-packet_t packet_init(uint8_t address, sensor_t sensor_type);
+packet_t packet_init(uint32_t address, sensor_t sensor_type);
 
 // Tasks
 void data_transmitter(void *pvParameters);
@@ -69,7 +69,7 @@ int main(void)
 					break;
 				}
 			}
-		}
+		} 
 		ack.data = 0;
 	};
     
@@ -83,10 +83,11 @@ void data_transmitter(void *pvParameters) {
 	}
 }
 
-packet_t packet_init(uint8_t address, sensor_t sensor_type) {
+packet_t packet_init(uint32_t address, sensor_t sensor_type) {
+	uint32_t deb = address;
 	packet_t packet;
 	packet = packet_new();
-	packet.address = address;
+	packet.address = (uint8_t)address;
 	packet.type = sensor_type;
 	
 	return packet;
