@@ -10,6 +10,7 @@ bool tx_data(packet_t packet) {
 	
 	uint8_t buf[MAX_BUF_SIZE];
 	empty_buf(buf);
+	packet_set_checksum(&packet);
 	
 	uint8_t bytes = 0;
 	

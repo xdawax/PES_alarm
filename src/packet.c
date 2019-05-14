@@ -19,8 +19,8 @@ uint8_t packet_to_buf(uint8_t buf[], packet_t packet) {
 	size++;
 	buf[BUF_SEQUENCE] = packet.sequence;
 	size++;
-	//buf[BUF_STAMP] = packet.time_stamp;	// TODO
-	//size++;
+	buf[BUF_CHECKSUM] = packet.checksum;
+	size++;
 	
  	return size;
 }
@@ -35,6 +35,7 @@ packet_t buf_to_packet(uint8_t buf[]) {
 	packet.type = (sensor_t)buf[BUF_TYPE];
 	packet.data = data;
 	packet.sequence = buf[BUF_SEQUENCE];
+	packet.checksum = buf[BUF_CHECKSUM];
 	
 	return packet;
 }

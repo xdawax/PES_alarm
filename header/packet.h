@@ -18,7 +18,7 @@
 #define BUF_DATA2 4
 #define BUF_DATA3 5
 #define BUF_SEQUENCE 6
-#define BUF_checksum 7
+#define BUF_CHECKSUM 7
 #define ACK 0xFEFEFEFE
 /********************** TYPEDEFS ****************************/
 
