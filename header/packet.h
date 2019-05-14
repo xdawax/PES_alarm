@@ -18,6 +18,7 @@
 #define BUF_DATA2 4
 #define BUF_DATA3 5
 #define BUF_SEQUENCE 6
+#define BUF_checksum 7
 #define ACK 0xFEFEFEFE
 /********************** TYPEDEFS ****************************/
 
@@ -37,6 +38,7 @@ typedef struct packet {
 	sensor_t type;
 	uint32_t data;
 	uint8_t sequence;
+	uint8_t checksum;
 	//time_stamp_t  time_stamp;		// TODO
 } packet_t;
 
@@ -75,6 +77,8 @@ void packet_set_data(packet_t *packet, uint32_t data);
 ///
 /// @returns void
 void packet_set_time(packet_t *packet, time_stamp_t time_stamp);
+
+void packet_set_checksum(packet_t *packet);
 
 
 /********************** GETTERS ****************************/
@@ -139,6 +143,6 @@ packet_t buf_to_packet(uint8_t buf[]);
 /// @return the number of bytes in the packet
 uint8_t packet_to_buf(uint8_t buf[], packet_t packet);
 
-
+uint8_t packet_calculate_checksum(packet_t packet);
 
 #endif

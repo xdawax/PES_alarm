@@ -50,6 +50,31 @@ packet_t packet_new() {
 	
 }
 
+uint8_t packet_calculate_checksum(packet_t packet) {
+	uint8_t buf_size = sizeof(packet_t);
+	uint8_t buf[buf_size];
+	
+	for (int i = 0; i < buf_size; i++) {
+		buf[i] = 0;
+	}
+	
+	packet_to_buf(buf, packet);
+	
+	uint16_t check_sum = 0;     
+	
+	for (int i = 0; i < buf_size; i++) {
+		check_sum+= buf[i];
+	}
+	
+	return check_sum;
+}
+
+void packet_set_checksum(packet_t *packet) {
+	packet->checksum = packet_calculate_checksum(*packet);
+}
+
+
+
 bool packet_is_ack(packet_t packet) {
 	
 	if (packet.data == ACK) {
