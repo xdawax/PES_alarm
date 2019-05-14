@@ -43,7 +43,7 @@ uint8_t USART_RX_buf(uint8_t buf[]) {
 	
 	uint8_t index = 0;
 	uint8_t received = 1;
-	while (received != '\r') {
+	while (received != END_COM) {
 		received = USART_RX_byte();
 		buf[index] = received;
 		USART_TX_byte(buf[index]);
@@ -60,6 +60,7 @@ void USART_TX_buf(uint8_t buf[], uint8_t size) {
 	for (i = 0; i < size; i++) {
 		USART_TX_byte(buf[i]);
 	}
+	USART_TX_byte(END_COM);
 }
 
 bool USART_data_available(void) {

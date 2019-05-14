@@ -8,6 +8,7 @@
 #define GPIOC_RX 10
 #define SR_RXNE 5
 #define SR_TE  	6
+#define END_COM 0xFF
 
 /// Initiates the USART1 with the settings 
 /// 8bit word, 1 stop bit, no parity, no flow control, TX = PA9, RX = PA10

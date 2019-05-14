@@ -22,7 +22,9 @@ bool tx_data(packet_t packet);
 /// @retuns the received packet
 packet_t rx_data(void);
 
-bool wait_for_ack(void);
+bool wait_for_ack(packet_t packet);
+
+bool received_ack(packet_t packet, packet_t received_packet);
 
 bool tx_string(packet_t packet);
 #endif

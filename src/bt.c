@@ -22,19 +22,24 @@ bool tx_data(packet_t packet) {
 
 packet_t rx_data() {
 	packet_t packet;
+	uint8_t buf[255];
 	
+	USART_RX_buf(buf);
+	
+	packet = buf_to_packet(buf);
+		
 	return packet;
 }
 
-bool wait_for_ack() {
+bool wait_for_ack(packet_t packet) {
 	uint16_t ticks = 0;
-	packet_t packet;
+	packet_t received_packet;
 	
 	while (ticks < ACK_WAIT_TIME) {
 		if (USART_data_available()) {
-			packet = rx_data();
+			received_packet = rx_data();
 		}
-		if (packet_is_ack(packet)) {
+		if (received_ack(packet, received_packet)) {
 			return true;
 		}
 	}
@@ -42,8 +47,11 @@ bool wait_for_ack() {
 	return false;
 }
 
-bool received_ack(packet_t packet) {
-	return true;
+bool received_ack(packet_t packet, packet_t received_packet) {
+	if (packet.data == ACK && packet.sequence == received_packet.sequence) {
+		return true;
+	}
+	return false;
 }
 
 bool tx_string(packet_t packet) {

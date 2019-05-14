@@ -53,14 +53,14 @@ int main(void)
 	if (task_creation == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY ) {
 		assert(false);
 	}
-
+	packet_to_transmit.sequence = 240;
 	while (1) {
 
 		
 		if (uxQueueMessagesWaiting(tx_queue)) {
 			xQueueReceive(tx_queue, &packet_to_transmit, 100);
 			tx_data(packet_to_transmit);
-			wait_for_ack();
+			//wait_for_ack(packet_to_transmit);
 			//print_packet(packet_to_transmit);
 			//test_buf_to_packet();
 		}
@@ -121,6 +121,12 @@ void EXTI15_10_IRQHandler(void) {
     }	
 
 	packet.sequence++;
+	
+	// 255 is reserved for END_OF_COM
+	if (packet.sequence == 255) {
+		packet.sequence = 0;
+	}
+	
 	uint8_t seq = packet.sequence;
 	xQueueSendToBackFromISR(tx_queue, (void*)&packet, &xHigherPriorityTaskWoken);
 	EXTI->PR = (1 << EXT12);
