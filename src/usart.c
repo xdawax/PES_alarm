@@ -40,13 +40,13 @@ void usartInit(uint32_t baudRate)
 }
 
 uint8_t USART_RX_buf(uint8_t buf[]) {
-	
+	uint8_t debug_buf[255];
 	uint8_t index = 0;
 	uint8_t received = 1;
 	while (received != END_COM) {
 		received = USART_RX_byte();
 		buf[index] = received;
-		USART_TX_byte(buf[index]);
+		debug_buf[index] = received;
 		index++;
 	}
 		

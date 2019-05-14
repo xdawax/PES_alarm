@@ -18,7 +18,7 @@
 #include "delay.h"
 
 #define MY_ADDRESS 0x07	// 0..255
-
+#define TX_ATTEMPTS 5
 sensor_t my_type = TEMP;
 
 volatile packet_t packet;
@@ -45,28 +45,33 @@ int main(void)
 	usartInit(38400);
 	interruptInit();
 
+	int tries;
+	
 	tx_queue = xQueueCreate(QUEUE_LENGTH, QUEUE_ITEM_SIZE);
 	rx_queue = xQueueCreate(QUEUE_LENGTH, QUEUE_ITEM_SIZE);
 	
 	packet_t packet_to_transmit;
-	
+	packet_t ack;
 	if (task_creation == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY ) {
 		assert(false);
 	}
 	packet_to_transmit.sequence = 240;
 	while (1) {
-
-		
+		tries = 0;
+		//ack = rx_data();
 		if (uxQueueMessagesWaiting(tx_queue)) {
 			xQueueReceive(tx_queue, &packet_to_transmit, 100);
-			tx_data(packet_to_transmit);
-			//wait_for_ack(packet_to_transmit);
-			//print_packet(packet_to_transmit);
-			//test_buf_to_packet();
+			while (tries < TX_ATTEMPTS) {
+				tx_data(packet_to_transmit);
+				ack = rx_data();
+				tries++;
+				if (packet_to_transmit.sequence == ack.sequence) {
+					break;
+				}
+			}
 		}
-		
+		ack.data = 0;
 	};
-
     
 }
 
@@ -122,8 +127,8 @@ void EXTI15_10_IRQHandler(void) {
 
 	packet.sequence++;
 	
-	// 255 is reserved for END_OF_COM
-	if (packet.sequence == 255) {
+	// 255 is reserved for END_OF_COM, 254 for ACK
+	if (packet.sequence == 254) {
 		packet.sequence = 0;
 	}
 	
