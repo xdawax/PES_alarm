@@ -127,13 +127,13 @@ void EXTI15_10_IRQHandler(void) {
     }	
 
 	packet.sequence++;
-	
+		
 	// 255 is reserved for END_OF_COM, 254 for ACK
 	if (packet.sequence == 254) {
 		packet.sequence = 0;
 	}
 	
-	uint8_t seq = packet.sequence;
+	packet_set_checksum(&packet);
 	xQueueSendToBackFromISR(tx_queue, (void*)&packet, &xHigherPriorityTaskWoken);
 	EXTI->PR = (1 << EXT12);
 }

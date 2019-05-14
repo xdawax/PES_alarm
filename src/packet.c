@@ -58,7 +58,7 @@ uint8_t packet_calculate_checksum(packet_t packet) {
 	for (int i = 0; i < buf_size; i++) {
 		buf[i] = 0;
 	}
-	
+	packet.checksum = 0;
 	packet_to_buf(buf, packet);
 	
 	uint16_t check_sum = 0;     
