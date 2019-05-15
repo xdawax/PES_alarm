@@ -41,7 +41,7 @@ int main(void)
 	
 	packet = packet_init(MY_ADDRESS, my_type);
 	reedInit();
-    ledInit();
+  ledInit();
 	usartInit(38400);
 	interruptInit();
 
@@ -58,7 +58,6 @@ int main(void)
 	packet_to_transmit.sequence = 240;
 	while (1) {
 		tries = 0;
-		//ack = rx_data();
 		if (uxQueueMessagesWaiting(tx_queue)) {
 			xQueueReceive(tx_queue, &packet_to_transmit, 100);
 			while (tries < TX_ATTEMPTS) {
@@ -84,7 +83,6 @@ void data_transmitter(void *pvParameters) {
 }
 
 packet_t packet_init(uint32_t address, sensor_t sensor_type) {
-	uint32_t deb = address;
 	packet_t packet;
 	packet = packet_new();
 	packet.address = (uint8_t)address;
