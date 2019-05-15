@@ -19,7 +19,7 @@
 
 #define MY_ADDRESS (*(unsigned long *)0x1FFFF7E8)		// 16 lsb of the device id
 #define TX_ATTEMPTS 5
-sensor_t my_type = TEMP;
+sensor_t my_type = REED;
 
 volatile packet_t packet;
 QueueHandle_t tx_queue;
