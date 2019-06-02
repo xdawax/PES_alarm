@@ -1,26 +1,13 @@
 #include "temp.h"
 
 void tempInit() {
-	// Enable alternate function clock. Bit 0 in RCC APB2ENR register
-	RCC->APB2ENR |= (1 << 0);
-	// Enable GPIOD clock. Bit 5 in RCC APB2ENR register
-	RCC->APB2ENR |= (1 << 5);
-	// Enable GPIOA clock. Bit 2 in RCC APB2ENR register
+// enable clocks for ADC1 and PORTA
 	RCC->APB2ENR |= (1 << 2);
-	// Enable clock for ADC1 clock. Bit 9 in RCC APB2ENR register
 	RCC->APB2ENR |= (1 << 9);
 
 	// Make PA0 analog input (0b0000)
 	GPIOC->CRL &= 0xFFFFFFF0;
 	GPIOC->CRL |= 0x00000000;
-
-	// Make PORTD output
-	GPIOD->CRL = 0x22222222;
-	GPIOD->CRH = 0x22222222;
-	GPIOD->ODR = 0;
-
-	// Enable End of Conversion (EOC) interrupt
-	ADC1->CR1 |= (1 << 5);
 
 	// One conversion
 	ADC1->SQR1 = 0x00000000;
@@ -53,4 +40,16 @@ void tempInit() {
 
 	// Start conversion with software trigger
 	ADC1->CR2 |= (1<<22);
+
+//	while(1)
+//	{
+//		
+//		// Read ADC value and pass it to GPIOD
+//		// This is done in the interrupt handler
+//		// Optionally can be done here without an interrupt
+//		ADC1->CR2 |= (1 << 22); // start conversion 
+//		while(!(ADC1->SR & (1 << 1)));	// wait until conversion completes
+//				
+//	}
 }
+

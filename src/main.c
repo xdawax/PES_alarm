@@ -16,10 +16,12 @@
 #include "bt.h"
 #include "debug.h"
 #include "delay.h"
+#include "temp.h"
+
 
 #define MY_ADDRESS (*(unsigned long *)0x1FFFF7E8)		// 16 lsb of the device id
 #define TX_ATTEMPTS 5
-sensor_t my_type = REED;
+sensor_t my_type = TEMP;
 
 volatile packet_t packet;
 QueueHandle_t tx_queue;
@@ -40,8 +42,19 @@ int main(void)
 	BaseType_t task_creation;
 	
 	packet = packet_init(MY_ADDRESS, my_type);
-	reedInit();
-  ledInit();
+	
+	switch (my_type) {
+		case REED:
+			reedInit();
+			ledInit();
+			break;
+		case TEMP:
+			tempInit();
+			break;
+		default:
+			break;
+	}
+	
 	usartInit(38400);
 	interruptInit();
 

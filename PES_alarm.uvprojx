@@ -417,6 +417,11 @@
               <FileType>1</FileType>
               <FilePath>.\src\delay.c</FilePath>
             </File>
+            <File>
+              <FileName>temp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\temp.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -456,6 +461,11 @@
               <FileName>delay.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\header\delay.h</FilePath>
+            </File>
+            <File>
+              <FileName>temp.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\header\temp.h</FilePath>
             </File>
           </Files>
         </Group>
