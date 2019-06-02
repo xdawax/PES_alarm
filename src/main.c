@@ -40,20 +40,20 @@ void data_transmitter(void *pvParameters);
 int main(void)
 {
 		packet = packet_init(MY_ADDRESS, my_type);
-	
+	usartInit(38400);
 	switch (my_type) {
 		case REED:
 			reedInit();
 			ledInit();
 			break;
 		case TEMP:
-			tempInit(&tx_queue);
+			tempInit(&tx_queue, packet);
 			break;
 		default:
 			break;
 	}
 	
-	usartInit(38400);
+	
 	interruptInit();
 
 	int tries;

@@ -157,66 +157,66 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>65</LineNumber>
+          <LineNumber>39</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134220996</Address>
+          <Address>134225180</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\src\temp.c</Filename>
+          <Filename>.\src\usart.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\test3\src/temp.c\65</Expression>
+          <Expression>\\test3\src/usart.c\39</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>71</LineNumber>
+          <LineNumber>19</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134226396</Address>
+          <Address>134225066</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\src\temp.c</Filename>
+          <Filename>.\src\bt.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\test3\src/temp.c\71</Expression>
+          <Expression>\\test3\src/bt.c\19</Expression>
         </Bp>
         <Bp>
           <Number>2</Number>
           <Type>0</Type>
-          <LineNumber>72</LineNumber>
+          <LineNumber>69</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134226408</Address>
+          <Address>134221570</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\src\temp.c</Filename>
+          <Filename>.\src\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\test3\src/temp.c\72</Expression>
+          <Expression>\\test3\src/main.c\69</Expression>
         </Bp>
         <Bp>
           <Number>3</Number>
           <Type>0</Type>
-          <LineNumber>73</LineNumber>
+          <LineNumber>72</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134226424</Address>
+          <Address>134220860</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\src\temp.c</Filename>
+          <Filename>.\src\usart.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\test3\src/temp.c\73</Expression>
+          <Expression>\\test3\src/usart.c\72</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -224,6 +224,21 @@
           <count>0</count>
           <WinNumber>1</WinNumber>
           <ItemText>debug</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>debug</ItemText>
+        </Ww>
+        <Ww>
+          <count>2</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>temp_packet</ItemText>
+        </Ww>
+        <Ww>
+          <count>3</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>tx_queue</ItemText>
         </Ww>
       </WatchWindow1>
       <ScvdPack>

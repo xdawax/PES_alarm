@@ -1,15 +1,25 @@
 #include "temp.h"
 
 #define STACK_SIZE 256
-#define TEMP_TASK_PERIOD 500
+#define TEMP_TASK_PERIOD 5000
 
+volatile packet_t temp_packet;
 int debug = 0;	
 
 void initTasks(QueueHandle_t *tx_queue);
+void initADC();
 void vTempReadTask(void *queue);
 
-void tempInit(QueueHandle_t *tx_queue) {
-// enable clocks for ADC1 and PORTA
+
+void tempInit(QueueHandle_t *tx_queue, packet_t packet) {
+	temp_packet = packet;
+	initADC();
+	initTasks(tx_queue);
+	vTaskStartScheduler();
+}
+
+void initADC() {
+	// enable clocks for ADC1 and PORTA
 	RCC->APB2ENR |= (1 << 2);
 	RCC->APB2ENR |= (1 << 9);
 
@@ -48,33 +58,38 @@ void tempInit(QueueHandle_t *tx_queue) {
 
 	// Start conversion with software trigger
 	ADC1->CR2 |= (1<<22);
-	
-	initTasks(tx_queue);
-	vTaskStartScheduler();
 }
 
 void initTasks(QueueHandle_t *tx_queue) {
-	BaseType_t xReturned;
-TaskHandle_t xHandle = NULL;
-
+	
     /* Create the task, storing the handle. */
-    xReturned = xTaskCreate(
-                    vTempReadTask,       /* Function that implements the task. */
-                    "Temperature Reader",          /* Text name for the task. */
-                    STACK_SIZE,      /* Stack size in words, not bytes. */
-                    ( void * ) tx_queue,    /* Parameter passed into the task. */
-                    tskIDLE_PRIORITY,/* Priority at which the task is created. */
-                    &xHandle );      /* Used to pass out the created task's handle. */
+    xTaskCreate(
+			vTempReadTask,       /* Function that implements the task. */
+      "Temperature Reader",          /* Text name for the task. */
+      STACK_SIZE,      /* Stack size in words, not bytes. */
+      ( void * ) tx_queue,    /* Parameter passed into the task. */
+      tskIDLE_PRIORITY,/* Priority at which the task is created. */
+      NULL );      /* Used to pass out the created task's handle. */
 }
 
-void vTempReadTask(void *queue) {
+void vTempReadTask(void *tx_queue) {
 	
 	while(1)
 	{
 		ADC1->CR2 |= (1 << 22); // start conversion 
 		while(!(ADC1->SR & (1 << 1)));	// wait until conversion completes
-		debug = ADC1->DR;
+		temp_packet.data = ADC1->DR;
+		temp_packet.sequence++;
+		
+	// 255 is reserved for END_OF_COM, 254 for ACK
+		if (temp_packet.sequence == 254) {
+			temp_packet.sequence = 0;
+		}
+	
+		packet_set_checksum(&temp_packet);
+		//xQueueSendToBack(tx_queue, (void*)&temp_packet, 0);
+		tx_data(temp_packet);
 		vTaskDelay(TEMP_TASK_PERIOD / portTICK_RATE_MS);
-	}
+		}
 }
 
