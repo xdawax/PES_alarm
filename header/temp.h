@@ -12,5 +12,5 @@
 #include "debug.h"
 #include "delay.h"
 
-void tempInit(void);
+void tempInit(QueueHandle_t *tx_queue);
 

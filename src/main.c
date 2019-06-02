@@ -39,9 +39,7 @@ void data_transmitter(void *pvParameters);
 
 int main(void)
 {
-	BaseType_t task_creation;
-	
-	packet = packet_init(MY_ADDRESS, my_type);
+		packet = packet_init(MY_ADDRESS, my_type);
 	
 	switch (my_type) {
 		case REED:
@@ -49,7 +47,7 @@ int main(void)
 			ledInit();
 			break;
 		case TEMP:
-			tempInit();
+			tempInit(&tx_queue);
 			break;
 		default:
 			break;
@@ -65,10 +63,8 @@ int main(void)
 	
 	packet_t packet_to_transmit;
 	packet_t ack;
-	if (task_creation == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY ) {
-		assert(false);
-	}
-	packet_to_transmit.sequence = 240;
+	
+	
 	while (1) {
 		tries = 0;
 		if (uxQueueMessagesWaiting(tx_queue)) {

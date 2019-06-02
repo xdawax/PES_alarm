@@ -1,6 +1,14 @@
 #include "temp.h"
 
-void tempInit() {
+#define STACK_SIZE 256
+#define TEMP_TASK_PERIOD 500
+
+int debug = 0;	
+
+void initTasks(QueueHandle_t *tx_queue);
+void vTempReadTask(void *queue);
+
+void tempInit(QueueHandle_t *tx_queue) {
 // enable clocks for ADC1 and PORTA
 	RCC->APB2ENR |= (1 << 2);
 	RCC->APB2ENR |= (1 << 9);
@@ -40,16 +48,33 @@ void tempInit() {
 
 	// Start conversion with software trigger
 	ADC1->CR2 |= (1<<22);
+	
+	initTasks(tx_queue);
+	vTaskStartScheduler();
+}
 
-//	while(1)
-//	{
-//		
-//		// Read ADC value and pass it to GPIOD
-//		// This is done in the interrupt handler
-//		// Optionally can be done here without an interrupt
-//		ADC1->CR2 |= (1 << 22); // start conversion 
-//		while(!(ADC1->SR & (1 << 1)));	// wait until conversion completes
-//				
-//	}
+void initTasks(QueueHandle_t *tx_queue) {
+	BaseType_t xReturned;
+TaskHandle_t xHandle = NULL;
+
+    /* Create the task, storing the handle. */
+    xReturned = xTaskCreate(
+                    vTempReadTask,       /* Function that implements the task. */
+                    "Temperature Reader",          /* Text name for the task. */
+                    STACK_SIZE,      /* Stack size in words, not bytes. */
+                    ( void * ) tx_queue,    /* Parameter passed into the task. */
+                    tskIDLE_PRIORITY,/* Priority at which the task is created. */
+                    &xHandle );      /* Used to pass out the created task's handle. */
+}
+
+void vTempReadTask(void *queue) {
+	
+	while(1)
+	{
+		ADC1->CR2 |= (1 << 22); // start conversion 
+		while(!(ADC1->SR & (1 << 1)));	// wait until conversion completes
+		debug = ADC1->DR;
+		vTaskDelay(TEMP_TASK_PERIOD / portTICK_RATE_MS);
+	}
 }
 
