@@ -3,9 +3,11 @@
 #define STACK_SIZE 256
 #define SAMPLE_INTERVAL 600
 #define MAX_READS 10
+#define TX_ATTEMPTS 5
 
 volatile packet_t temp_packet;
 int debug = 0;	
+packet_t ack;
 
 void initTasks(QueueHandle_t *tx_queue);
 void initADC();
@@ -85,11 +87,13 @@ uint32_t tempAverage(uint32_t readings[]) {
 
 void vTempReadTask(void *tx_queue) {
 	uint8_t readings;
+	uint8_t tries;
+	
 	uint32_t tempData[MAX_READS];
 	while(1)
 	{
 		readings = 0;
-		
+		tries = 0;
 		for (;readings < MAX_READS; readings++) {
 			ADC1->CR2 |= (1 << 22); // start conversion 
 			while(!(ADC1->SR & (1 << 1)));	// wait until conversion completes
@@ -106,7 +110,15 @@ void vTempReadTask(void *tx_queue) {
 		}
 	
 		packet_set_checksum(&temp_packet);
-		//xQueueSendToBack(tx_queue, (void*)&temp_packet, 0);
+		
+		while (tries < TX_ATTEMPTS) {
+				tx_data(temp_packet);
+				ack = rx_data();
+				tries++;
+				if (temp_packet.sequence == ack.sequence) {
+					break;
+				}
+			}
 		tx_data(temp_packet);
 		
 		}
