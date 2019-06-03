@@ -1,7 +1,8 @@
 #include "temp.h"
 
 #define STACK_SIZE 256
-#define TEMP_TASK_PERIOD 5000
+#define SAMPLE_INTERVAL 600
+#define MAX_READS 10
 
 volatile packet_t temp_packet;
 int debug = 0;	
@@ -72,13 +73,31 @@ void initTasks(QueueHandle_t *tx_queue) {
       NULL );      /* Used to pass out the created task's handle. */
 }
 
-void vTempReadTask(void *tx_queue) {
+uint32_t tempAverage(uint32_t readings[]) {
+	uint32_t accumulator = 0;
 	
+	for (int i = 0; i < MAX_READS; i++) {
+			accumulator += readings[i];
+	}
+	
+	return accumulator / MAX_READS;
+}
+
+void vTempReadTask(void *tx_queue) {
+	uint8_t readings;
+	uint32_t tempData[MAX_READS];
 	while(1)
 	{
-		ADC1->CR2 |= (1 << 22); // start conversion 
-		while(!(ADC1->SR & (1 << 1)));	// wait until conversion completes
-		temp_packet.data = ADC1->DR;
+		readings = 0;
+		
+		for (;readings < MAX_READS; readings++) {
+			ADC1->CR2 |= (1 << 22); // start conversion 
+			while(!(ADC1->SR & (1 << 1)));	// wait until conversion completes
+			tempData[readings] = ADC1->DR;
+			vTaskDelay(SAMPLE_INTERVAL / portTICK_RATE_MS);
+		}
+		
+		temp_packet.data = tempAverage(tempData);
 		temp_packet.sequence++;
 		
 	// 255 is reserved for END_OF_COM, 254 for ACK
@@ -89,7 +108,8 @@ void vTempReadTask(void *tx_queue) {
 		packet_set_checksum(&temp_packet);
 		//xQueueSendToBack(tx_queue, (void*)&temp_packet, 0);
 		tx_data(temp_packet);
-		vTaskDelay(TEMP_TASK_PERIOD / portTICK_RATE_MS);
+		
 		}
 }
+
 
