@@ -9,19 +9,19 @@ volatile packet_t temp_packet;
 int debug = 0;	
 packet_t ack;
 
-void initTasks();
-void initADC();
-void vTempReadTask();
+void init_tasks(void);
+void init_ADC(void);
+void vTempReadTask(void);
 
 
-void tempInit(packet_t packet) {
+void temp_init(packet_t packet) {
 	temp_packet = packet;
-	initADC();
-	initTasks();
+	init_ADC();
+	init_tasks();
 	vTaskStartScheduler();
 }
 
-void initADC() {
+void init_ADC() {
 	// enable clocks for ADC1 and PORTA
 	RCC->APB2ENR |= (1 << 2);
 	RCC->APB2ENR |= (1 << 9);
@@ -64,7 +64,7 @@ void initADC() {
 }
 
 // FreeRTOS task example from API
-void initTasks() {
+void init_tasks() {
 	
     /* Create the task, storing the handle. */
     xTaskCreate(
@@ -76,7 +76,7 @@ void initTasks() {
       NULL );      /* Used to pass out the created task's handle. */
 }
 
-uint32_t tempAverage(uint32_t readings[]) {
+uint32_t temp_average(uint32_t readings[]) {
 	uint32_t accumulator = 0;
 	
 	for (int i = 0; i < MAX_READS; i++) {
@@ -90,7 +90,7 @@ void vTempReadTask() {
 	uint8_t readings;
 	uint8_t tries;
 	
-	uint32_t tempData[MAX_READS];
+	uint32_t temp_data[MAX_READS];
 	while(1)
 	{
 		readings = 0;
@@ -98,11 +98,11 @@ void vTempReadTask() {
 		for (;readings < MAX_READS; readings++) {
 			ADC1->CR2 |= (1 << 22); // start conversion 
 			while(!(ADC1->SR & (1 << 1)));	// wait until conversion completes
-			tempData[readings] = ADC1->DR;
+			temp_data[readings] = ADC1->DR;
 			vTaskDelay(SAMPLE_INTERVAL / portTICK_RATE_MS);
 		}
 		
-		temp_packet.data = tempAverage(tempData);
+		temp_packet.data = temp_average(temp_data);
 		temp_packet.sequence++;
 		
 	// 255 is reserved for END_OF_COM, 254 for ACK

@@ -12,5 +12,5 @@
 #include "debug.h"
 #include "delay.h"
 
-void tempInit(packet_t packet);
+void temp_init(packet_t packet);
 

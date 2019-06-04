@@ -28,9 +28,9 @@ QueueHandle_t tx_queue;
 QueueHandle_t rx_queue;
 
 // Functions
-void ledInit(void);
-void reedInit(void);
-void interruptInit(void);
+void led_init(void);
+void reed_init(void);
+void interrupt_init(void);
 packet_t packet_init(uint32_t address, sensor_t sensor_type);
 
 // Tasks
@@ -43,18 +43,18 @@ int main(void)
 	usartInit(38400);
 	switch (my_type) {
 		case REED:
-			reedInit();
-			ledInit();
+			reed_init();
+			led_init();
 			break;
 		case TEMP:
-			tempInit(packet);
+			temp_init(packet);
 			break;
 		default:
 			break;
 	}
 	
 	
-	interruptInit();
+	interrupt_init();
 
 	int tries;
 	
@@ -100,7 +100,7 @@ packet_t packet_init(uint32_t address, sensor_t sensor_type) {
 	return packet;
 }
 
-void interruptInit() {
+void interrupt_init() {
 	__disable_irq();
 	
 	RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;					// ENABLE clock for AFIO
@@ -145,7 +145,7 @@ void EXTI15_10_IRQHandler(void) {
 	EXTI->PR = (1 << EXT12);
 }
 
-void reedInit()
+void reed_init()
 {
 	GPIO_InitTypeDef GPIO_InitStruct;
 
@@ -156,7 +156,7 @@ void reedInit()
     GPIO_Init(GPIOB, &GPIO_InitStruct);
 }
 
-void ledInit()
+void led_init()
 {
     GPIO_InitTypeDef GPIO_InitStruct;
 
