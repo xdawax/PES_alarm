@@ -21,6 +21,7 @@ void temp_init(packet_t packet) {
 	vTaskStartScheduler();
 }
 
+// was one bit off, configettings from Furkan Cayci
 void init_ADC() {
 	// enable clocks for ADC1 and PORTA
 	RCC->APB2ENR |= (1 << 2);
@@ -33,11 +34,6 @@ void init_ADC() {
 	// One conversion
 	ADC1->SQR1 = 0x00000000;
 
-	// Choose the analog channel to read
-	// Since we want channel 10 to be the first
-	//   conversion we write 10 to SQ1 bits (3:0)
-	//   which is in SQR3 register. For multiple conversions
-	//   keep writing the channel numbers to SQx bits.
 	ADC1->SQR3 = (0 << 0);
 
 	// Set up software trigger to start conversion
@@ -46,8 +42,6 @@ void init_ADC() {
 
 	// Enable continuous conversion
 	ADC1->CR2 |= (1 << 1);
-
-	//enable_interrupt(ADC1_2_IRQn);
 
 	// Enable A/D conversion
 	ADC1->CR2 |= (1 << 0);
