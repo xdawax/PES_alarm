@@ -9,15 +9,15 @@ volatile packet_t temp_packet;
 int debug = 0;	
 packet_t ack;
 
-void initTasks(QueueHandle_t *tx_queue);
+void initTasks();
 void initADC();
-void vTempReadTask(void *queue);
+void vTempReadTask();
 
 
-void tempInit(QueueHandle_t *tx_queue, packet_t packet) {
+void tempInit(packet_t packet) {
 	temp_packet = packet;
 	initADC();
-	initTasks(tx_queue);
+	initTasks();
 	vTaskStartScheduler();
 }
 
@@ -63,14 +63,15 @@ void initADC() {
 	ADC1->CR2 |= (1<<22);
 }
 
-void initTasks(QueueHandle_t *tx_queue) {
+// FreeRTOS task example from API
+void initTasks() {
 	
     /* Create the task, storing the handle. */
     xTaskCreate(
 			vTempReadTask,       /* Function that implements the task. */
       "Temperature Reader",          /* Text name for the task. */
       STACK_SIZE,      /* Stack size in words, not bytes. */
-      ( void * ) tx_queue,    /* Parameter passed into the task. */
+      NULL,    /* Parameter passed into the task. */
       tskIDLE_PRIORITY,/* Priority at which the task is created. */
       NULL );      /* Used to pass out the created task's handle. */
 }
@@ -85,7 +86,7 @@ uint32_t tempAverage(uint32_t readings[]) {
 	return accumulator / MAX_READS;
 }
 
-void vTempReadTask(void *tx_queue) {
+void vTempReadTask() {
 	uint8_t readings;
 	uint8_t tries;
 	
@@ -120,7 +121,7 @@ void vTempReadTask(void *tx_queue) {
 				}
 			}
 		tx_data(temp_packet);
-		
+
 		}
 }
 

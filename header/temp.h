@@ -12,5 +12,5 @@
 #include "debug.h"
 #include "delay.h"
 
-void tempInit(QueueHandle_t *tx_queue, packet_t packet);
+void tempInit(packet_t packet);
 

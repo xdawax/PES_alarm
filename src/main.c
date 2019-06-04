@@ -47,7 +47,7 @@ int main(void)
 			ledInit();
 			break;
 		case TEMP:
-			tempInit(&tx_queue, packet);
+			tempInit(packet);
 			break;
 		default:
 			break;
